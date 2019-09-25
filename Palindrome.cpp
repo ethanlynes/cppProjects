@@ -5,41 +5,48 @@ using namespace std;
 
 int main() {
 
-  char yeet[80];
-
-  cin.get(yeet, 80);
-  cin.get();
+  char firstString[80];
   
-  for (int i = 0; i < strlen(yeet); i++) {
+  cin.get(firstString, 80);
+  cin.get();
+  //user input
+  int length = strlen(firstString);
+  
+  for (int i = 0; i < length; i++) {//goes through the input, if it's a letter, make it lowercase
 
-     yeet[i] = tolower(yeet[i]);
+     firstString[i] = tolower(firstString[i]);
   }
 
-  cout << yeet << endl;
+  cout << "making lowercase: " << firstString << endl;
 
   int count = 0;
-  for (int i = 0; i < strlen(yeet); i++) {
-    if (int(yeet[i]) > 96 && int(yeet[i]) < 123) {
-      yeet[count++] = yeet[i];
+  for (int i = 0; i < length; i++) {//if an index isn't a lowercase letter, push it to the end of the string, then remove
+    if (int(firstString[i]) > 96 && int(firstString[i]) < 123) {
+      firstString[count++] = firstString[i];
     }  
   }
+  firstString[count] = '\0';
   
-  yeet[count] = '\0';
-
-  char teey[strlen(yeet)-1];
-  count = strlen(teey);
-  for (int i = 0; i <= strlen(yeet); i++) {
-    teey[count--] = yeet[i];
-    cout << teey << endl;
-   
+  cout << "removing non-letters: " << firstString << endl;
+  
+  
+  length = strlen(firstString) - 1;
+  char secondString[length];
+  int count2 = length;
+  
+  for (int i = 0; i <= length; i++) {//makes a backwards string into a second character array
+    secondString[count2--] = firstString[i];
+    //basically, it takes the length of the first string, uses that to edit the index of the second string, then works backwards until it's iterated through the entire string
   }
+  secondString[length+1] = '\0';
 
-  //teey[strlen(teey)] = '\0';
+  cout << "backwards string: " << secondString << endl;
 
-  cout << "default string: " << yeet << endl;
-  
-  cout << "backwards string: " << teey << endl;
-  
+  if (strcmp(firstString, secondString) == 0) {//checks if the backwards string is equal to the first string
+    cout << "your string IS a palindrome" << endl;
+  } else {
+    cout << "your string is NOT a palindrome" << endl;
+  }
 
   
   return 0;
