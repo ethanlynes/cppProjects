@@ -3,6 +3,17 @@
 #include <cstdio>
 using namespace std;
 
+/*
+This is Palindrome
+Name: Ethan Lynes
+Class: CPP & Data Structures
+Date:10/1
+Description:
+takes in a string, removes all characters that aren't letters, then checks if it's a palindrome. Report if it is or not.
+
+*/
+
+
 int main() {
 
   char firstString[80];
