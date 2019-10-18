@@ -10,13 +10,15 @@ yeet
 */
 
 struct Student {
-  char first_name[10];
-  char last_name[10];
+  char first_name[20];
+  char last_name[20];
   int id;
   float gpa;
 };
 
-void addStudent(vector<Student> students);
+void addStudent(vector<Student> &students);
+void listStudents(vector<Student> students);
+void delStudent(vector<Student> &students, int id);
 
 int main() {
   bool running = true;
@@ -27,7 +29,6 @@ int main() {
   while (running == true) {
 
     cout << "actions: ADD, DEL, LIST, QUIT" << endl;
-    cout << input << endl;
     cin.get(input,5);
     cin.get();
 
@@ -40,15 +41,17 @@ int main() {
 	       input[1] == 'E' &&
 	       input[2] == 'L') {
 
-
-      cout << endl;
+      int id;
+      cout << "Enter the id of the student you want to remove" << endl;
+      cin >> id;
+      cin.get();
+      delStudent(students, id);
     } else if (input[0] == 'L' &&
 	       input[1] == 'I' &&
 	       input[2] == 'S' &&
 	       input[3] == 'T') {
 
-      cout << "Size: " << students.size() << endl;
-      cout << endl;
+      listStudents(students);
     } else if (input[0] == 'Q' &&
 	       input[1] == 'U' &&
 	       input[2] == 'I' &&
@@ -63,23 +66,45 @@ int main() {
   }
 }
 
-void addStudent(vector<Student> students) {
+void addStudent(vector<Student> &students) {
   Student temp;
   cout << "First name: ";
-  cin.get(temp.first_name,10);
+  cin.get(temp.first_name,20);
   cin.get();
   
   cout << "Last name: ";
-  cin.get(temp.last_name,10);
+  cin.get(temp.last_name,20);
   cin.get();
-  /*
+  
   cout << "ID: ";
   cin >> temp.id;
+  cin.get();
   
   cout << "GPA: ";
   cin >> temp.gpa;
-  */
+  cin.get();
   
   students.push_back(temp);
+  cout << endl;
+}
+
+void listStudents(vector<Student> students) {
+  cout << "Size: " << students.size() << endl;
+  for (int i = 0; i < students.size(); i++) {
+    cout << students[i].first_name << " " << students[i].last_name << ", ";
+    cout << "ID: " << students[i].id << ", ";
+    cout.precision(3);
+    cout.setf(ios::showpoint);
+    cout << "GPA: " << students[i].gpa << endl;
+  }
+  cout << endl;
+}
+
+void delStudent(vector<Student> &students, int id) {
+  for (int i = 0; i < students.size(); i++) {
+    if (students[i].id == id) {
+      students.erase(students.begin()+i);
+    }
+  }
   cout << endl;
 }
