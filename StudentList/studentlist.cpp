@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 /*
@@ -22,15 +23,15 @@ struct Student {
 };
 
 // init methods
-void addStudent(vector<Student> &students);
-void listStudents(vector<Student> students);
-void delStudent(vector<Student> &students, int id);
+void addStudent(vector<Student*> &students);
+void listStudents(vector<Student*> students);
+void delStudent(vector<Student*> &students, int id);
 
 int main() {
   bool running = true;
 
   // vector of students
-  vector<Student> students;
+  vector<Student*> students;
 
   char input[5];
   //loops program until running = false
@@ -42,15 +43,11 @@ int main() {
     cin.get();
 
     // checks which command
-    if (input[0] == 'A' &&
-	input[1] == 'D' &&
-	input[2] == 'D') {
+    if (strcmp(input,"ADD") == 0) {
 
       // if ADD, call addstudent method
       addStudent(students);
-    } else if (input[0] == 'D' &&
-	       input[1] == 'E' &&
-	       input[2] == 'L') {
+    } else if (strcmp(input,"DEL") == 0) {
 
       // if DEL, ask for a student id and calls deletestudent method
       int id;
@@ -58,17 +55,11 @@ int main() {
       cin >> id;
       cin.get();
       delStudent(students, id);
-    } else if (input[0] == 'L' &&
-	       input[1] == 'I' &&
-	       input[2] == 'S' &&
-	       input[3] == 'T') {
+    } else if (strcmp(input,"LIST") == 0) {
 
       // if LIST, call liststudents method
       listStudents(students);
-    } else if (input[0] == 'Q' &&
-	       input[1] == 'U' &&
-	       input[2] == 'I' &&
-	       input[3] == 'T') {
+    } else if (strcmp(input,"QUIT") == 0) {
 
       // if QUIT, end while loop, ending the program
       cout << "Terminating..." << endl;
@@ -84,7 +75,7 @@ int main() {
 
 
 // method for adding students to the vector
-void addStudent(vector<Student> &students) {
+void addStudent(vector<Student*> &students) {
 
   // creates a temporary student struct
   Student temp;
@@ -108,13 +99,13 @@ void addStudent(vector<Student> &students) {
   cin.get();
 
   // adds the data from the temporary student to the vector
-  students.push_back(temp);
+  (*students).push_back(temp);
   cout << endl;
 }
 
 
 // method for listing students to the console
-void listStudents(vector<Student> students) {
+void listStudents(vector<Student*> students) {
 
   // outputs the vector's size (number of students)
   cout << "Size: " << students.size() << endl;
@@ -123,29 +114,29 @@ void listStudents(vector<Student> students) {
   for (int i = 0; i < students.size(); i++) {
 
     // for each student, output their first name, last name, and id
-    cout << students[i].first_name << " " << students[i].last_name << ", ";
-    cout << "ID: " << students[i].id << ", ";
+    cout << students[i]->first_name << " " << students[i]->last_name << ", ";
+    cout << "ID: " << students[i]->id << ", ";
 
     // set the gpa to show 2 decimal places
-    cout.precision(3);
-    cout.setf(ios::showpoint);
+    cout << fixed;
+    cout << setprecision(2);
 
     // output their gpa
-    cout << "GPA: " << students[i].gpa << endl;
+    cout << "GPA: " << students[i]->gpa << endl;
   }
   cout << endl;
 }
 
 
 // method for deleting students from the vector
-void delStudent(vector<Student> &students, int id) {
+void delStudent(vector<Student*> &students, int id) {
 
   // iterates through the vector
   for (int i = 0; i < students.size(); i++) {
     
     // checks if a student's id is equal to the input given
-    if (students[i].id == id) {
-      
+    if (students[i]->id == id) {
+      delete students[i];
       // if so, remove the student's data from the vector
       students.erase(students.begin()+i);
     }
