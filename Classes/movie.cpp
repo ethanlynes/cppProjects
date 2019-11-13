@@ -1,6 +1,5 @@
 #include <iostream>
-#include <string.h>
-#include "parent.h"
+#include "movie.h"
 
 using namespace std;
 

@@ -1,0 +1,12 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Media {
+ public:
+  int year;
+  string title;
+  void getYear();
+  void getTitle();
+};
