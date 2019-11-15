@@ -1,0 +1,21 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include "room.h"
+#include "items.h"
+
+using namespace std;
+
+int main() {
+  vector<Room*>* rooms = new vector<Room*>;
+
+  Room* temp = new Room;
+  cin.get(temp->name,20);
+  cin.get();
+
+  cout << temp->name << endl;
+
+  rooms->push_back(temp);
+
+  return 0;
+}
