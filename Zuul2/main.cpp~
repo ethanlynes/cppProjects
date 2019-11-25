@@ -1,0 +1,272 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include "room.h"
+#include "items.h"
+
+using namespace std;
+
+/*
+Name: Ethan Lynes
+Date:
+Program: Adventure game
+File: Main Zuul file
+*/
+
+// function declarations
+void listCommands(char validCommands[][10]);
+bool processCommand(char word1[10], char word2[20], char validCommands[][10], Room* &currentRoom, vector<Item*> &inventory);
+bool isCommand(char command[10], char validCommands[][10]);
+void goRoom(char direction[20], Room* &currentRoom);
+bool hasSecondWord(char word2[20]);
+void listInventory(vector<Item*> inventory);
+void getItem(char itemname[20], Room* &currentRoom, vector<Item*> &inventory);
+void dropItem(char itemname[20], Room* &currentRoom, vector<Item*> &inventory);
+void describeRoom(Room* currentRoom);
+
+
+int main() {
+  
+  // vars
+  char SOUTH[6] = "south";
+  char NORTH[6] = "north";
+  char EAST[5] = "east";
+  char WEST[5] = "west";
+  char validCommands[][10] = {
+    "go", "quit", "help", "inventory", "get", "drop", "room"
+  };
+  vector<Item*> inventory;
+  
+  
+  // rooms
+  Room* currentRoom;
+  
+  char office_d[] = "You are in the office.";
+  char office_n[] = "The office.";
+  Room* office = new Room(office_d,office_n);
+  
+  char lobby_d[] = "You are in the lobby.";
+  char lobby_n[] = "The lobby.";
+  Room* lobby = new Room(lobby_d,lobby_n);
+  
+  lobby->setExit(WEST,office);
+  office->setExit(EAST,lobby);
+  currentRoom = office;
+  
+  // items
+  char pencil_n[] = "pencil";
+  Item* pencil = new Item(pencil_n);
+  office->setItem(pencil);
+  
+  // start of program
+  describeRoom(currentRoom);
+  //cout << listInventory(inventory); << endl;
+  cout << "Type 'help' for a list of commands." << endl;
+  
+  bool finished = false;
+  bool hasWon = false;
+  while (!finished && !hasWon) {
+    
+    // takes input as a 'command'
+    char command[40];
+    cin.get(command,40);
+    cin.get();
+    
+    // initializes word1 and word2 with a space (for comparison's sake)
+    char word1[10] = " ";
+    char word2[20] = " ";
+    int wordCount = 1;
+    
+    // goes through input and adds to wordCount for every space
+    int length = strlen(command);
+    for (int i = 0; i < length; i++) {
+        if (command[i] == ' ') {
+            wordCount++;
+        }
+        //input filter
+        command[i] = tolower(command[i]);
+    }
+    
+    // if there are too many words then restart
+    if (wordCount > 2) {
+        cout << "Enter no more than 2 commands" << endl;
+    } else {
+        // else, the wordCount is below 3
+        // separate the input into tokens by a space and
+        // assign them to word1 and word2
+        int count = 0;
+        char *token = strtok(command," ");
+        while (token) {
+            count++;
+            if (count == 1) {
+                strcpy(word1,token);
+            } else if (count == 2) {
+                strcpy(word2,token);
+            }
+            token = strtok(NULL," ");
+        }
+        // finally, process the input
+        // while loop will end if 'processCommand' evaluates to true
+        // (if user either quits or the winning condition is met)
+        finished = processCommand(word1,word2,validCommands,currentRoom,inventory);
+        
+        int len = lobby->items.size();
+        for (int i = 0; i < len; i++) {
+            if (!strcmp(lobby->items[i]->name,"pencil")) {
+                hasWon = true;
+            }
+        }
+    }
+    if (hasWon) {
+        cout << "You won!" << endl;
+        cout << "Thank you for playing.";
+    }
+  }
+  
+  return 0;
+}
+
+// lists the commands available
+// from the validCommands array
+void listCommands(char validCommands[][10]) {
+  cout << "Commands: ";
+  for (int i = 0; i < 7; i++) {
+    if (i == 6) {
+        cout << validCommands[i];
+    } else {
+        cout << validCommands[i] << ", ";
+    }
+  }
+  cout << endl << endl;
+}
+
+// processes all the commands entered
+// executes different code depending user input
+// only returns true if the user enters 'quit'
+bool processCommand(char word1[10], char word2[20], char validCommands[][10], Room* &currentRoom, vector<Item*> &inventory) {
+
+  bool wantToQuit = false;
+  
+  // first check if the input is valid, if not return false (exits function)
+  if (!isCommand(word1,validCommands)) {
+    cout << "That is not a valid command!" << endl;
+    return false;
+  }
+  
+  // calls on a function for each command
+  if (!strcmp(word1,"help")) {
+      listCommands(validCommands);
+  } else if (!strcmp(word1,"go")) {
+      goRoom(word2,currentRoom);
+  } else if (!strcmp(word1,"quit")) {
+      if (hasSecondWord(word2)) {
+          cout << "Quit what?" << endl;
+      } else {
+          cout << "Quitting.." << endl;
+          wantToQuit = true;
+      }
+  } else if (!strcmp(word1,"room")) {
+      describeRoom(currentRoom);
+  } else if (!strcmp(word1,"get")) {
+      getItem(word2,currentRoom,inventory);
+  } else if (!strcmp(word1,"inventory")) {
+      listInventory(inventory);
+  } else if (!strcmp(word1,"drop")) {
+      dropItem(word2,currentRoom,inventory);
+  }
+  return wantToQuit;
+}
+
+// returns true if the input matches any of the first word commands
+// in the validCommands array
+bool isCommand(char command[10], char validCommands[][10]) {
+  for (int i = 0; i < 7; i++) {
+    if (!strcmp(command,validCommands[i])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// first checks if user has another word after 'go',
+// then it changes current room depending on the direction (second word)
+void goRoom(char direction[20], Room* &currentRoom) {
+    
+    if (!hasSecondWord(direction)) {
+        cout << "Go where?" << endl;
+    } else if (currentRoom->checkExit(direction)) {
+        currentRoom->goExit(direction,currentRoom);
+        describeRoom(currentRoom);
+    } 
+}
+
+// returns true if the second input isn't ' ' (default)
+bool hasSecondWord(char word2[20]) {
+    return (strcmp(word2," "));
+}
+
+// lists what you have in your inventory
+void listInventory(vector<Item*> inventory) {
+    int length = inventory.size();
+    if (length < 1) {
+        cout << "Your inventory is empty." << endl;
+    } else {
+        cout << "You have:" << endl;
+        for (int i = 0; i < length; i++) {
+            cout << inventory[i]->name << endl;
+        }
+    }
+}
+
+// puts the item in your inventory and removes it from the room
+// checks if item exists
+void getItem(char itemname[20], Room* &currentRoom, vector<Item*> &inventory) {
+    int length = currentRoom->items.size();
+    bool itemFound = false;
+    for (int i = 0; i < length; i++) {
+        if (!strcmp(itemname,(currentRoom->items[i]->name))) {
+            inventory.push_back(currentRoom->items[i]);
+            currentRoom->items.erase(currentRoom->items.begin()+i);
+            cout << "Item picked up." << endl << endl;
+            itemFound = true;
+        }
+    }
+    if (!itemFound) {
+        cout << "That item doesn't exist!" << endl;
+    }
+}
+
+// removes item from inventory and adds it to the room
+// also check if the item exists
+void dropItem(char itemname[20], Room* &currentRoom, vector<Item*> &inventory) {
+    int length = inventory.size();
+    bool itemFound = false;
+    for (int i = 0; i < length; i++) {
+        if (!strcmp(itemname,(inventory[i]->name))) {
+            currentRoom->items.push_back(inventory[i]);
+            inventory.erase(inventory.begin()+i);
+            cout << "Item dropped." << endl << endl;
+            itemFound = true;
+        }
+    }
+    if (!itemFound) {
+        cout << "That item doesn't exist!" << endl;
+    }
+}
+
+//output the room's description, exits, and items
+void describeRoom(Room* currentRoom) {
+    
+    cout << currentRoom->description << endl;
+    currentRoom->listExits();
+    int length = currentRoom->items.size();
+    if (length > 0) {
+        cout << "Items in this room: " << endl;
+        for (int i = 0; i < length; i++) {
+            cout << currentRoom->items[i]->name << endl;
+        }
+    } else {
+        cout << "There are no items in this room." << endl;
+    }
+    cout << endl;
+}
