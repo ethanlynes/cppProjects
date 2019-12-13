@@ -7,6 +7,7 @@ using namespace std;
 class Student {
  public:
   int id;
-  char name[20];
+  Student(int newid);
+  ~Student();
 };
 #endif

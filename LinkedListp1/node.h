@@ -16,6 +16,7 @@ class Node {
   Student* getStudent();
   void setNext(Node* newnext);
   Node* getNext();
+ private:
   Student* student;
   Node* next;
 };
