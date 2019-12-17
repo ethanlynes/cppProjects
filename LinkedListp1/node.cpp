@@ -14,8 +14,11 @@ Node::Node(Student* newstudent) {
 }
 
 Node::~Node() {
-  student->~Student();
-  delete next;
+  cout << "point 1" << endl;
+  delete student;
+  cout << "point 2" << endl;
+  next = NULL;
+  cout << "point 3" << endl;
 }
 
 Student* Node::getStudent() {

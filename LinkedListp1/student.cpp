@@ -8,5 +8,6 @@ Student::Student(int newid) {
 }
 
 Student::~Student() {
-  delete &id;
+  cout << "point 1.1" << endl;
+  cout << "point 1.2" << endl;
 }

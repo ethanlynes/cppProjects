@@ -9,47 +9,29 @@ File: main file
 */
 
 int main() {
-
-  Student* jeff = new Student(0);
-  Student* john = new Student(1);
-
-  Node* node = new Node(jeff);
-  cout << "jeff's id: " << node->getStudent()->id << endl;
-  cout << "next node: " << node->getNext() << endl;
-  cout << endl;
+  //students
+  Student* jeff = new Student(1);
+  Student* john = new Student(2);
+  Student* jim = new Student(3);
   
+  //nodes
+  Node* node1 = new Node(jeff);
   Node* node2 = new Node(john);
-  node->setNext(node2);
-  cout << "added \"john\"" << endl;
-  cout << endl;
-  
-  cout << "jeff's id: " << node->getStudent()->id << endl;
-  cout << "jeff's next node (john): " << node->getNext() << endl;
+  Node* node3 = new Node(jim);
+  node1->setNext(node2);
+  node2->setNext(node3);
+
+  cout << "jeff's id: " << node1->getStudent()->id << endl;
+  cout << "jeff's next node's id: " << node1->getNext()->getStudent()->id << endl;
   cout << "john's id: " << node2->getStudent()->id << endl;
+  cout << "john's next node's id: " << node2->getNext()->getStudent()->id << endl;
+  
+
+  delete node2;
+  node1->setNext(node3);
+  cout << "deleted student john" << endl;
+  cout << node1->getNext() << endl;
+  cout <<
   
   return 0;
 }
-/*
-void add(Node* &head, Student* newstudent) {
-  Node* current = head;
-  if (current == NULL) {
-    head = new Node(newstudent);
-  } else {
-    while (current->getNext() != NULL) {
-      current = current->getNext();
-    }
-    current->setNext(new Node(newstudent));
-  }
-}
-
-
-void print(Node* &head, Node* next) {
-  if (next == head) {
-    cout << "list: " << endl;
-  }
-  if (next != NULL) {
-    cout << next->getStudent()->id << endl;
-    print(head,next->getNext());
-  }
-}
-*/
