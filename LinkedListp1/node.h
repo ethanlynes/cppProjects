@@ -10,13 +10,13 @@ File: node header
 */
 
 class Node {
- public:
+ public://functions
   Node(Student* newstudent);
   ~Node();
   Student* getStudent();
   void setNext(Node* newnext);
   Node* getNext();
- private:
+ private://vars
   Student* student;
   Node* next;
 };
