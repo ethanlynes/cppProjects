@@ -39,8 +39,10 @@ int main() {
       input[i] = tolower(input[i]);
     }
 
-    if (strcmp(input,"add") == 0) {
+    // checks input for all commands
+    if (strcmp(input,"add") == 0) {// if input = 'add'
 
+      // takes input for student parameters
       cout << "name: ";
       char name[100];
       cin.get(name,100);
@@ -55,12 +57,18 @@ int main() {
       float gpa;
       cin >> gpa;
       cin.get();
+      // creates a temporary student
       Student* temp = new Student(id,name,gpa);
+
       gpacount += gpa;
+      // runs add method
       add(head,temp,head,studentcount);
       cout << endl;
-    } else if (strcmp(input,"print") == 0) {
+
+    } else if (strcmp(input,"print") == 0) {// if input =
+        
       print(head,head);
+      
     } else if (strcmp(input,"delete") == 0) {
 
       int id;
@@ -104,7 +112,6 @@ void add(Node* &head, Student* newstudent, Node* current, int &studentcount) {
       
     } else {// more than 1
       if (current->getStudent()->id > id) {
-	// only true if it is the first node
 	// if node has greater id, add student in front of it
 	head = new Node(newstudent);
 	head->setNext(current);
@@ -119,10 +126,12 @@ void add(Node* &head, Student* newstudent, Node* current, int &studentcount) {
 
       } else if (current->getStudent()->id < id &&
       current->getNext()->getStudent()->id > id) {
+
 	//checks if it can fit student between current and next node
 	Node* temp = new Node(newstudent);
 	temp->setNext(current->getNext());
 	current->setNext(temp);
+	
 	cout << "student added" << endl;
 	studentcount++;
 	
@@ -135,11 +144,15 @@ void add(Node* &head, Student* newstudent, Node* current, int &studentcount) {
   }
 }
 
+// func for printing out all students
 void print(Node* &head, Node* next) {
+  // (gpa decimal thingy)
   cout << fixed;
   cout << setprecision(2);
+  // 
   if (head == NULL) {
     cout << "This list is empty" << endl;
+    return;
   }
   if (next == head) {
     cout <<  "list: " << endl;
